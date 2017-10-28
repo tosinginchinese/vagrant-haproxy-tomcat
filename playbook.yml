@@ -1,0 +1,44 @@
+---
+- hosts: all
+  remote_user: root
+  become: yes
+  become_method: sudo
+
+  tasks:
+  - name: Install epel
+    yum: name=epel-release.noarch state=present
+    
+  - name: Install Java
+    yum: name=java state=present
+
+  - name: add group "tomcat"
+    group: name=tomcat
+
+  - name: add user "tomcat"
+    user: name=tomcat group=tomcat home=/usr/share/tomcat createhome=no
+    become: True
+    become_method: sudo
+
+  - name: Install Tomcat
+    yum: name=tomcat state=present
+    
+  - name: Install tomcat-webapps
+    yum: name=tomcat-webapps.noarch state=present
+    
+  - name: Install tomcat-docs-webapp
+    yum: name=tomcat-docs-webapp.noarch state=present
+    
+  - name: Install tomcat-admin-webapps
+    yum: name=tomcat-admin-webapps.noarch state=present
+    
+  - name: Start Tomcat
+    service: name=tomcat state=started enabled=yes
+ 
+  - name: Download and install haproxy
+    yum: name=haproxy state=present
+
+  - name: Configure the haproxy cnf file with hosts
+    template: src=haproxy.cfg dest=/etc/haproxy/haproxy.cfg
+
+  - name: Start the haproxy service
+    service: name=haproxy state=started enabled=yes

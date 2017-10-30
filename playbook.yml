@@ -21,7 +21,7 @@
 
   - name: Install Tomcat
     yum: name=tomcat state=present
-    
+   
   - name: Install tomcat-webapps
     yum: name=tomcat-webapps.noarch state=present
     
@@ -31,14 +31,17 @@
   - name: Install tomcat-admin-webapps
     yum: name=tomcat-admin-webapps.noarch state=present
     
+  - name: Configure Tomcat users
+    template: src=tomcat-users.xml dest=/etc/tomcat/tomcat-users.xml
+    
   - name: Start Tomcat
     service: name=tomcat state=started enabled=yes
  
-  - name: Download and install haproxy
+  - name: Install Haproxy
     yum: name=haproxy state=present
 
-  - name: Configure the haproxy cnf file with hosts
+  - name: Configure Haproxy
     template: src=haproxy.cfg dest=/etc/haproxy/haproxy.cfg
 
-  - name: Start the haproxy service
+  - name: Start Haproxy
     service: name=haproxy state=started enabled=yes
